@@ -3,6 +3,10 @@ using PSecApp.Application.Services.Abstractions;
 using Microsoft.Office.Interop.Excel;
 using System.IO;
 using System.Data;
+using PSecApp.Application.DTOs;
+using System.Diagnostics.Contracts;
+using PSecApp.Domain.Entities;
+using PSecApp.Domain.Enums;
 
 namespace PSecApp.Application.Services.Implementations
 {
@@ -15,15 +19,63 @@ namespace PSecApp.Application.Services.Implementations
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(fileLocation); //, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
             Excel._Worksheet xlWorksheet = (Excel._Worksheet)xlWorkbook.Sheets[1];
-            //Excel.Range xlRange = xlWorksheet.UsedRange;
+            Excel.Range xlRange = xlWorksheet.UsedRange;
 
-            // var tst = xlRange.Value2;
-            int xlColums = xlWorksheet.UsedRange.Columns.Count;
-            for (int col = 1; col < length; col++)
+            // Convert worksheet range into a 2D array.
+            object[,] worksheetAsArray = (object[,])xlRange.Value2;
+
+            // For our files, ingore row 1,2,3 and 5
+            List<DailyMTM> dailyMTMs = new();
+            for (int xlrow = 6; xlrow < worksheetAsArray.GetUpperBound(0); xlrow++)
             {
+                //for (int xcol = 1; xcol < worksheetAsArray.GetUpperBound(1); xcol++)
+                //{
+                //    var rw = worksheetAsArray[xlrow, xcol];
+                //    //var a = worksheetAsArray[xlrow, 1];
+                //    //var expiryDate = worksheetAsArray[xlrow, 3];
+                //    //var c = worksheetAsArray[xlrow, 4];
+                //}
 
+                var xptDateProblem = worksheetAsArray[xlrow, 3];
+
+                //Map Excel columns to
+                dailyMTMs.Add(new DailyMTM()
+                {
+                    Contract = (string)worksheetAsArray[xlrow, (int)FileEntityMapping.Contract], // Map to Column A
+                    //ExpiryDate = DateTime.Parse(worksheetAsArray[xlrow, (int)FileEntityMapping.ExpiryDate].ToString()), // Map to Column C
+                    Classification = (string)worksheetAsArray[xlrow, (int)FileEntityMapping.Classification], // Map to Column D
+
+                    Strike = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.Strike], // Map to Column E "Strike"
+                    //CallPut = (string)worksheetAsArray[xlrow, (int)FileEntityMapping.CallPut], // Map to Column E "Call/Put"
+                    //MTMYield = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.MTMYield], // Map to Column E "MTM Yield"
+                    //MarkPrice = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.MarkPrice], // Map to Column E "Mark Price"
+                    //SpotRate = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.SpotRate], // Map to Column E "Spot Rate"
+                    //PreviousMTM = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.PreviousMTM], // Map to Column E "Previous MTM"
+                    //PreviousPrice = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.PreviousPrice], // Map to Column E "Previous Price"
+                    //PremiumOnOption = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.PremiumOnOption], // Map to Column E "Premium On Option"
+                    //Volatility = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.Volatility], // Map to Column E "Volatility"
+                    //Delta = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.Delta], // Map to Column E "Delta" 
+                    //DeltaValue = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.DeltaValue], // Map to Column E "Delta Value" 
+                    //ContractsTraded = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.ContractsTraded], // Map to Column E "ContractsTraded" 
+                    //OpenInterest = (float)worksheetAsArray[xlrow, (int)FileEntityMapping.OpenInterest], // Map to Column E "Open Interest" 
+                });
             }
-        
+
+            var tst2 = dailyMTMs;
+
+
+
+            //// var tst = xlRange.Value2;
+            //int xlRows = xlWorksheet.UsedRange.Rows.Count;
+            //int xlColums = xlWorksheet.UsedRange.Columns.Count;
+
+            //// Ignore first 3 rows
+            //for (int xlRow = 1; xlRow < xlRows; xlRow++)
+            //{
+            //    var tst = xlRows
+            //}
+            // Out data starts from row 
+
             //var tst = READExcel(fileLocation);
             //int rowCount = xlRange.Rows.Count;
             //int colCount = xlRange.Columns.Count;
@@ -37,8 +89,8 @@ namespace PSecApp.Application.Services.Implementations
             //    }
             //}
 
-            //xlWorkbook.Close();
-            //xlApp.Quit();
+            xlWorkbook.Close();
+            xlApp.Quit();
         }
 
         public System.Data.DataTable READExcel(string path)
