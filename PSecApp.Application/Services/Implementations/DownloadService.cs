@@ -69,7 +69,7 @@ namespace PSecApp.Application.Services.Implementations
                 // Do not process empty files.
                 if (new FileInfo(path).Length > 0)
                 {
-                    _fileProcessor.ProcessDownloadedFile(path);
+                    _fileProcessor.ProcessDownloadedFileAsync(path);
                 }
                         
             }

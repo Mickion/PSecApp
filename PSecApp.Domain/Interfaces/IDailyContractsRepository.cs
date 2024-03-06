@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace PSecApp.Domain.Interfaces
 {
-    public interface IDailyMTMRepository
+    public interface IDailyContractsRepository
     {
-       public bool SaveContract(DailyMTM dailyMTM);
+       public Task SaveDailyContractsAsync(List<DailyMTM> dailyMTM);
     }
 }

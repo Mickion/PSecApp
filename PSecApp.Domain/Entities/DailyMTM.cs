@@ -21,31 +21,31 @@ namespace PSecApp.Domain.Entities
 
         public string Classification { get; set; } = string.Empty;
 
-        public float Strike { get; set; } = 0.00f;
+        public double Strike { get; set; } = 0.00d;
 
         public string CallPut { get; set; } = string.Empty;
 
-        public float MTMYield { get; set; } = 0.00f;
+        public double MTMYield { get; set; } = 0.00d;
 
-        public float MarkPrice { get; set; } = 0.00f;
+        public double MarkPrice { get; set; } = 0.00d;
 
-        public float SpotRate { get; set; } = 0.00f;
+        public double SpotRate { get; set; } = 0.00d;
 
-        public float PreviousMTM { get; set; } = 0.00f;
+        public double PreviousMTM { get; set; } = 0.00d;
 
-        public float PreviousPrice { get; set; } = 0.00f;
+        public double PreviousPrice { get; set; } = 0.00d;
 
-        public float PremiumOnOption { get; set; } = 0.00f;
+        public double PremiumOnOption { get; set; } = 0.00d;
 
-        public float Volatility { get; set; } = 0.00f;
+        public double Volatility { get; set; } = 0.00d;
 
-        public float Delta { get; set; } = 0.00f;
+        public double Delta { get; set; } = 0.00d;
 
-        public float DeltaValue { get; set; } = 0.00f;
+        public double DeltaValue { get; set; } = 0.00d;
 
-        public float ContractsTraded { get; set; } = 0.00f;
+        public double ContractsTraded { get; set; } = 0.00d;
 
-        public float OpenInterest { get; set; } = 0.00f;
+        public double OpenInterest { get; set; } = 0.00d;
 
     }
 }

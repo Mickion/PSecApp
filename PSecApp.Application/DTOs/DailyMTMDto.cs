@@ -8,38 +8,38 @@ namespace PSecApp.Application.DTOs
 {
     public class DailyMTMDto
     {
-        public DateTime FileDate { get; set; } = DateTime.Now;
+        public string FileDate { get; set; } = string.Empty;
 
         public string Contract { get; set; } = string.Empty;
 
-        public DateTime ExpiryDate { get; set; } = DateTime.Now;
+        public string ExpiryDate { get; set; } = string.Empty;
 
         public string Classification { get; set; } = string.Empty;
 
-        public float Strike { get; set; } = 0.00f;
+        public string Strike { get; set; } = string.Empty;
 
         public string CallPut { get; set; } = string.Empty;
 
-        public float MTMYield { get; set; } = 0.00f;
+        public string MTMYield { get; set; } = string.Empty;
 
-        public float MarkPrice { get; set; } = 0.00f;
+        public string MarkPrice { get; set; } = string.Empty;
 
-        public float SpotRate { get; set; } = 0.00f;
+        public string SpotRate { get; set; } = string.Empty;
 
-        public float PreviousMTM { get; set; } = 0.00f;
+        public string PreviousMTM { get; set; } = string.Empty;
 
-        public float PreviousPrice { get; set; } = 0.00f;
+        public string PreviousPrice { get; set; } = string.Empty;
 
-        public float PremiumOnOption { get; set; } = 0.00f;
+        public string PremiumOnOption { get; set; } = string.Empty;
 
-        public float Volatility { get; set; } = 0.00f;
+        public string Volatility { get; set; } = string.Empty;
 
-        public float Delta { get; set; } = 0.00f;
+        public string Delta { get; set; } = string.Empty;
 
-        public float DeltaValue { get; set; } = 0.00f;
+        public string DeltaValue { get; set; } = string.Empty;
 
-        public float ContractsTraded { get; set; } = 0.00f;
+        public string ContractsTraded { get; set; } = string.Empty;
 
-        public float OpenInterest { get; set; } = 0.00f;
+        public string OpenInterest { get; set; } = string.Empty;
     }
 }
