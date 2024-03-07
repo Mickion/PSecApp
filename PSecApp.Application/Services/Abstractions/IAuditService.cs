@@ -5,16 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PSecApp.Domain.Interfaces
+namespace PSecApp.Application.Services.Abstractions
 {
-    public interface IDailyContractsRepository
+    public interface IAuditService
     {
         /// <summary>
-        /// Persists file data into a dababase
+        /// Save file audit trail
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="audit"></param>
         /// <returns></returns>
-        Task<bool> InsertFileDataAsyc(List<DailyMTM> data);
-
+        Task<DailyMTMFilesAudit> AuditFile(DailyMTMFilesAudit audit);
     }
 }

@@ -15,7 +15,7 @@ namespace PSecApp.Application.Models
 
         public string SourceFileUri { get; set; } = string.Empty;
 
-        //public string DownloadToPath { get; set; } = string.Empty;
+        public DateTime FileDate { get; set; } = DateTime.Now;
 
         //string sourceFile, string destinationFolder, string destinationFileName
     }

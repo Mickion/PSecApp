@@ -9,5 +9,7 @@ namespace PSecApp.Domain.Common
     public class BaseEntity
     {
         public int Id { get; set; }
+
+        public DateTime FileDate { get; set; } = DateTime.Now;
     }
 }

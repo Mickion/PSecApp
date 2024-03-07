@@ -1,14 +1,59 @@
-﻿using PSecApp.Application.Services.Implementations;
+﻿// Other comments are added to show case my understanding
 
-string fileName = "20240102_D_Daily MTM Report.xls";
-// TODO: Save in config.json
-string destination = "C:\\Users\\micki\\Documents\\psec";
-string source = "https://clientportal.jse.co.za/_layouts/15/DownloadHandler.ashx?FileName=/YieldX/Derivatives/Docs_DMTM";
+using PSecApp.Application.Helpers;
+using PSecApp.Application.Models;
+using PSecApp.Application.Services.Abstractions;
+using PSecApp.Application.Services.Implementations;
+using PSecApp.Domain.Entities;
+using PSecApp.Domain.Interfaces;
+using PSecApp.Infrastructure.Repositories;
 
-// TODO: Refactor working soultion
-DownloadService dService = new DownloadService();
-await dService.DownloadFilesAsync(source, destination, 2024);
-Console.WriteLine("FILES DOWNLOADED SUCCESSFULLY");
+//string fileName = "20240102_D_Daily MTM Report.xls";
+//// TODO: Save in config.json
+//string destination = "C:\\Users\\micki\\Documents\\psec";
+//string source = "https://clientportal.jse.co.za/_layouts/15/DownloadHandler.ashx?FileName=/YieldX/Derivatives/Docs_DMTM";
+
+
+////TODO: Implement Dependency Injection
+//IFileValidatorService fileValidatorService = new FileValidatorService();
+//IDailyContractsRepository dataRepository = new DailyContractsRepository();
+
+//IFileDownloadService dService = new FileDownloadService(fileValidatorService);
+//IFileReaderService<DailyMTM, DownloadFile> readerService = new FileReaderService(fileValidatorService);
+
+//IFileDataService dataService = new FileDataService(dataRepository);
+
+//foreach (DownloadFile file in DownloadHelper.GetDownloadFileNames(source, destination, 2024))
+//{
+//    // wrap with try
+//    await dService.DownloadFilesAsync(file.SourceFileUri, file.DestinationFolder, file.DestinationFileName);
+//    //Mark File As Downloaded
+
+//    //
+//    var data = await readerService.ReadDataFromAFileAsync(file);
+
+//    //TODO: Exception handling
+//    if(data.Count > 0)
+//    {
+//        var successfull = await dataService.SaveFileDataAsync(data);
+//        if (successfull)
+//        {
+//            Console.WriteLine("Completed processing file {0}", file.SourceFileUri);
+//        }
+//        else
+//        {
+//            Console.WriteLine("Mark the file as un-processed for re-processing");
+//        }
+//    }
+
+//    // Mark File As Processed
+    
+//}
+
+//// TODO: Refactor working soultion
+//DownloadService dService = new DownloadService();
+//await dService.DownloadFilesAsync(source, destination, 2024);
+//Console.WriteLine("FILES DOWNLOADED SUCCESSFULLY");
 
 //// 1. Download file from - to
 
@@ -58,16 +103,3 @@ Console.WriteLine("FILES DOWNLOADED SUCCESSFULLY");
 //excelService.ProcessFiles(downloadedFiles);
 
 Console.ReadLine();
-
-public class DownloadFile
-{
-    public string FileName { get; set; } = string.Empty;
-    public string DownloadFromPath { get; set; } = string.Empty;
-    public string DownloadToPath { get; set; } = string.Empty;
-}
-
-//public class Response
-//{
-//    public bool Success { get; set; } = true;
-//    public string Message { get; set; } = string.Empty;
-//}

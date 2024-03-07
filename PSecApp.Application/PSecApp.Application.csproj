@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PSecApp.Domain\PSecApp.Domain.csproj" />
+    <ProjectReference Include="..\PSecApp.Infrastructure\PSecApp.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

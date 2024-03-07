@@ -12,9 +12,7 @@ namespace PSecApp.Domain.Entities
     /// DailyMTM IS-A an Entity.
     /// </summary>
     public class DailyMTM: BaseEntity
-    {        
-        public DateTime FileDate { get; set; } = DateTime.Now;
-
+    {                
         public string Contract { get; set; } = string.Empty;
 
         public DateTime ExpiryDate { get; set; } = DateTime.Now;

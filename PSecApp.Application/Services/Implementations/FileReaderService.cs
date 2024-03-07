@@ -9,37 +9,47 @@ using PSecApp.Domain.Entities;
 using PSecApp.Domain.Enums;
 using System;
 using PSecApp.Domain.Interfaces;
+using PSecApp.Application.Models;
 
 namespace PSecApp.Application.Services.Implementations
 {
-    public class FileProcessorService : IFileProcessorService
+    /// <summary>
+    /// Reads Excel file content & nothing else (SRP)    
+    /// </summary>
+    public class FileReaderService
+        : IFileReaderService<DailyMTM, DownloadFile>
     {
-        private readonly IDailyContractsRepository _dailyContractsRepository;
-        public FileProcessorService(IDailyContractsRepository dailyContractsRepository)
+        // TODO:  Logger
+        private readonly IFileValidatorService _fileValidatorService;
+        public FileReaderService(IFileValidatorService fileValidatorService)
         {
-            _dailyContractsRepository = dailyContractsRepository;
+            _fileValidatorService = fileValidatorService;
         }
-
 
         #region Public Methods
 
         /// <summary>
-        /// Read, Process and Save the excel data
+        /// Read Excel content using Interop.Excel
         /// </summary>
-        /// <param name="fileLocation"></param>
-        public async Task ProcessDownloadedFileAsync(string fileLocation)
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public async Task<List<DailyMTM>> ReadDataFromAFileAsync(DownloadFile source)
         {
+            // Do not process empty file (0KB)
+            string path = Path.Combine(source.DestinationFolder, source.DestinationFileName);
+
+            if (_fileValidatorService.IsFileEmpty(path)) return new List<DailyMTM>();
+
             Excel.Application xlApp = new Excel.Application();
-            Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(fileLocation); 
+            Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(path);
             Excel._Worksheet xlWorksheet = (Excel._Worksheet)xlWorkbook.Sheets[1];
             Excel.Range xlRange = xlWorksheet.UsedRange;
 
-            var mappedData = MapWorksheetToEntityList(xlRange);
-            
-            await this.ProcessDownloadedFile(mappedData);
-
+            var mappedData = this.MapWorksheetToEntityList(xlRange, source.FileDate);
             xlWorkbook.Close();
             xlApp.Quit();
+
+            return mappedData;
         }
 
         #endregion
@@ -51,7 +61,7 @@ namespace PSecApp.Application.Services.Implementations
         /// </summary>
         /// <param name="xlRange"></param>
         /// <returns></returns>
-        private List<DailyMTM> MapWorksheetToEntityList(Excel.Range xlRange)
+        private List<DailyMTM> MapWorksheetToEntityList(Excel.Range xlRange, DateTime fileDate)
         {
             List<DailyMTM> dailyMTMs = new();
 
@@ -61,10 +71,16 @@ namespace PSecApp.Application.Services.Implementations
             // For our files, ingore row 1,2,3 and 5
             for (int xlrow = 6; xlrow < worksheetAsArray.GetUpperBound(0); xlrow++)
             {
-                // TODO FileDATE???
-                //Map Excel columns to
+                string contract = (string)worksheetAsArray[xlrow, (int)FileEntityMapping.Contract];
+                if (string.IsNullOrEmpty(contract))
+                {
+                    break; // Reached the end of the file data.
+                }
+
+                //Map Excel columns to Entity                
                 dailyMTMs.Add(new DailyMTM()
                 {
+                    FileDate = fileDate,
                     Contract = (string)worksheetAsArray[xlrow, (int)FileEntityMapping.Contract], // Map to Column A
                     ExpiryDate = DateTime.FromOADate(Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.ExpiryDate])), // Map to Column C
                     Classification = (string)worksheetAsArray[xlrow, (int)FileEntityMapping.Classification], // Map to Column D
@@ -77,26 +93,18 @@ namespace PSecApp.Application.Services.Implementations
                     PreviousMTM = Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.PreviousMTM]), // Map to Column E "Previous MTM"
                     PreviousPrice = Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.PreviousPrice]), // Map to Column E "Previous Price"
                     PremiumOnOption = Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.PremiumOnOption]), // Map to Column E "Premium On Option"
-                    Volatility = Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.Volatility].ToString().Replace(".", ",")), // Map to Column E "Volatility"
+
+                    //TODO: Fix bug
+                    //Volatility = Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.Volatility].ToString().Replace(".", ",")), // Map to Column E "Volatility"
                     Delta = Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.Delta]), // Map to Column E "Delta" 
                     DeltaValue = Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.DeltaValue]), // Map to Column E "Delta Value" 
                     ContractsTraded = Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.ContractsTraded]), // Map to Column E "ContractsTraded" 
-                    OpenInterest = Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.OpenInterest]), // Map to Column E "Open Interest" 
+                    OpenInterest = Convert.ToDouble(worksheetAsArray[xlrow, (int)FileEntityMapping.OpenInterest]) // Map to Column E "Open Interest" 
                 });
             }
 
             return dailyMTMs;
         }
-
-        /// <summary>
-        /// Persists data into a database
-        /// </summary>
-        /// <param name="dailyMTMsList"></param>
-        private async Task ProcessDownloadedFile(List<DailyMTM> dailyMTMsList)
-        {
-            await _dailyContractsRepository.SaveDailyContractsAsync(dailyMTMsList);
-        }
-
 
         #endregion      
     }
