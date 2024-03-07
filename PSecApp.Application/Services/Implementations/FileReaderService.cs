@@ -35,9 +35,12 @@ namespace PSecApp.Application.Services.Implementations
         /// <returns></returns>
         public async Task<List<DailyMTM>> ReadDataFromAFileAsync(DownloadFile source)
         {
-            // Do not process empty file (0KB)
             string path = Path.Combine(source.DestinationFolder, source.DestinationFileName);
 
+            // Only files that have not been processed already should be extracted & processed
+            if (_fileValidatorService.IsFilesAlreadyProcessed(source.DestinationFileName)) return new List<DailyMTM>(); ;
+           
+            // Do not process empty file (0KB)
             if (_fileValidatorService.IsFileEmpty(path)) return new List<DailyMTM>();
 
             Excel.Application xlApp = new Excel.Application();

@@ -10,10 +10,17 @@ namespace PSecApp.Application.Services.Abstractions
     public interface IAuditService
     {
         /// <summary>
-        /// Save file audit trail
+        /// Update file audit trail
         /// </summary>
         /// <param name="audit"></param>
         /// <returns></returns>
-        Task<DailyMTMFilesAudit> AuditFile(DailyMTMFilesAudit audit);
+        Task<DailyMTMFilesAudit> AuditFileAsync(DailyMTMFilesAudit audit);
+
+        /// <summary>
+        /// Update file audit trail
+        /// </summary>
+        /// <param name="audit"></param>
+        /// <returns></returns>
+        Task<DailyMTMFilesAudit> GetFileAuditByFileNameAsync(string fileName);
     }
 }

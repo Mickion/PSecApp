@@ -38,7 +38,7 @@ namespace PSecApp.Application.Services.Implementations
             string path = Path.Combine(destinationFolder, destinationFileName);
 
             // Only files that have not been downloaded already should be downloaded.
-            if (_fileValidatorService.IsFileAlreadyDownloaded(path)) return;
+            if (_fileValidatorService.IsFileAlreadyDownloaded(destinationFolder, destinationFileName)) return;
 
             using (Stream fileStream = await _httpClient.GetStreamAsync(sourceFile))
             {                    
@@ -49,29 +49,6 @@ namespace PSecApp.Application.Services.Implementations
 
                 }
             }
-        }
-
-        private void AuditFileDownload(bool isDownloadCompleted, string destinationFileName, string path="")
-        {
-            DailyMTMFilesAudit audit = new DailyMTMFilesAudit()
-            {
-                //[FileDate] date NOT NULL,
-                FileName = destinationFileName,
-                DownloadedFlag = isDownloadCompleted,
-                DownloadStartTime = (!isDownloadCompleted) ? DateTime.Now : null,
-                DownloadEndTime = (isDownloadCompleted) ? DateTime.Now : null,
-                DownloadLocation = path,
-                DownloadError varchar(250),
-                [ProcessedFlag] bit NOT NULL,
-                [ProcessingStartTime] date,
-                [ProcessingEndTime] date,
-                [ProcessingError] varchar(250)
-            }
-
-            _auditService.AuditFile(new Domain.Entities.DailyMTMFilesAudit()
-            {
-
-            });
-        }
+        }        
     }
 }

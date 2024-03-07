@@ -1,5 +1,6 @@
 ﻿// Other comments are added to show case my understanding
 
+using PSecApp.Application;
 using PSecApp.Application.Helpers;
 using PSecApp.Application.Models;
 using PSecApp.Application.Services.Abstractions;
@@ -14,15 +15,19 @@ using PSecApp.Infrastructure.Repositories;
 //string source = "https://clientportal.jse.co.za/_layouts/15/DownloadHandler.ashx?FileName=/YieldX/Derivatives/Docs_DMTM";
 
 
-////TODO: Implement Dependency Injection
-//IFileValidatorService fileValidatorService = new FileValidatorService();
-//IDailyContractsRepository dataRepository = new DailyContractsRepository();
+//TODO: Implement Dependency Injection
+IAuditFileRepository auditFileRepository = new AuditFileRepository(); 
+IAuditService auditService = new AuditService(auditFileRepository);
+IFileValidatorService fileValidatorService = new FileValidatorService(auditFileRepository);
+IDailyContractsRepository dataRepository = new DailyContractsRepository();
 
-//IFileDownloadService dService = new FileDownloadService(fileValidatorService);
-//IFileReaderService<DailyMTM, DownloadFile> readerService = new FileReaderService(fileValidatorService);
+IFileDownloadService dService = new FileDownloadService(fileValidatorService);
+IFileReaderService<DailyMTM, DownloadFile> readerService = new FileReaderService(fileValidatorService);
 
-//IFileDataService dataService = new FileDataService(dataRepository);
+IFileDataService dataService = new FileDataService(dataRepository);
 
+Application app = new Application(auditService, dataService, dService, fileValidatorService, readerService);
+await app.ProcessFiles(2024);
 //foreach (DownloadFile file in DownloadHelper.GetDownloadFileNames(source, destination, 2024))
 //{
 //    // wrap with try
@@ -47,7 +52,7 @@ using PSecApp.Infrastructure.Repositories;
 //    }
 
 //    // Mark File As Processed
-    
+
 //}
 
 //// TODO: Refactor working soultion

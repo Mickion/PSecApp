@@ -25,26 +25,6 @@ namespace PSecApp.Domain.Entities
         public bool DownloadedFlag { get; set; } = false;
 
         /// <summary>
-        /// Time download started. Will help with performance matrix
-        /// </summary>
-        public DateTime? DownloadStartTime { get; set; } = DateTime.Now;
-
-        /// <summary>
-        /// Time download ended. Will help with performance matrix
-        /// </summary>
-        public DateTime? DownloadEndTime { get; set; } = DateTime.Now;
-
-        /// <summary>
-        /// Location of downloaded file
-        /// </summary>
-        public string DownloadLocation { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Holds any download exceptions
-        /// </summary>
-        public string DownloadError { get; set; } = string.Empty;
-
-        /// <summary>
         /// Flag if file already processed
         /// </summary>
         public bool ProcessedFlag { get; set; } = false;
@@ -58,6 +38,11 @@ namespace PSecApp.Domain.Entities
         /// Time download ended. Will help with performance matrix
         /// </summary>
         public DateTime? ProcessingEndTime { get; set; } = DateTime.Now;
+             
+        /// <summary>
+        /// Holds any download exceptions
+        /// </summary>
+        public string DownloadError { get; set; } = string.Empty;
 
         /// <summary>
         /// Holds any download exceptions
