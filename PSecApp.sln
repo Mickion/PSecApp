@@ -13,6 +13,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSecApp.Infrastructure", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSecApp.UI", "PSecApp.UI\PSecApp.UI.csproj", "{B7666E0F-EA8C-44B4-BD69-FD7C0E606818}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "supporting files", "supporting files", "{9CC29E66-FB49-4B07-80D1-DDABCFE0B585}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Users\micki\Downloads\Prescient\sproc\1. Create_DailyMTM_Table.sql = ..\..\Users\micki\Downloads\Prescient\sproc\1. Create_DailyMTM_Table.sql
+		..\..\Users\micki\Downloads\Prescient\sproc\2. Create_FileAuditing_Table.sql = ..\..\Users\micki\Downloads\Prescient\sproc\2. Create_FileAuditing_Table.sql
+		..\..\Users\micki\Downloads\Prescient\sproc\3. Create_Insert_DailyMTM_sproc.sql = ..\..\Users\micki\Downloads\Prescient\sproc\3. Create_Insert_DailyMTM_sproc.sql
+		..\..\Users\micki\Downloads\Prescient\sproc\4. Create_Audit_sproc.sql = ..\..\Users\micki\Downloads\Prescient\sproc\4. Create_Audit_sproc.sql
+		..\..\Users\micki\Downloads\Prescient\sproc\5. Create_SP_Total_Contracts_Traded_Report.sql = ..\..\Users\micki\Downloads\Prescient\sproc\5. Create_SP_Total_Contracts_Traded_Report.sql
+		..\..\Users\micki\Downloads\Prescient\sproc\readme.txt = ..\..\Users\micki\Downloads\Prescient\sproc\readme.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
