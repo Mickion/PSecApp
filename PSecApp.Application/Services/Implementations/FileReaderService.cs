@@ -1,14 +1,7 @@
 ﻿using Excel = Microsoft.Office.Interop.Excel;
 using PSecApp.Application.Services.Abstractions;
-using Microsoft.Office.Interop.Excel;
-using System.IO;
-using System.Data;
-using PSecApp.Application.DTOs;
-using System.Diagnostics.Contracts;
 using PSecApp.Domain.Entities;
 using PSecApp.Domain.Enums;
-using System;
-using PSecApp.Domain.Interfaces;
 using PSecApp.Application.POCOs;
 using System.Runtime.InteropServices;
 
@@ -67,28 +60,15 @@ namespace PSecApp.Application.Services.Implementations
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
 
-                //xlWorkbook?.Close();
-                //xlApp?.Quit();
-
-                //System.Runtime.InteropServices.Marshal.ReleaseComObject(xlWorkbook);
-                //System.Runtime.InteropServices.Marshal.ReleaseComObject(xlWorksheet);
-                //System.Runtime.InteropServices.Marshal.ReleaseComObject(xlRange);
-                //System.Runtime.InteropServices.Marshal.ReleaseComObject(xlApp);
-                //xlWorkbook = null;
-                //xlWorksheet = null;
-                //xlRange = null;
-                //xlApp = null;
 
                 //release com objects to fully kill excel process from running in the background
                 if (xlRange != null)
-                {
                     Marshal.ReleaseComObject(xlRange);
-                }
+                
 
-                if (xlWorksheet != null)
-                {
+                if (xlWorksheet != null)                
                     Marshal.ReleaseComObject(xlWorksheet);
-                }
+                
 
                 //close and release
                 if (xlWorkbook != null)

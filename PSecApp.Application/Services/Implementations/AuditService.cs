@@ -17,18 +17,21 @@ namespace PSecApp.Application.Services.Implementations
             _auditFileRepository = auditFileRepository;
         }
 
+        /// <summary>
+        /// Save file audit details
+        /// </summary>
+        /// <param name="audit"></param>
+        /// <returns></returns>
         public async Task<DailyMTMFilesAudit> AuditFileAsync(DailyMTMFilesAudit audit)
         {
-            //var fileFound = await _auditFileRepository.GetAuditByFileNameAsync(audit.FileName);
-
-            //if (fileFound != null)
-            //{
-            //    audit.Id = fileFound.Id; // Update existing record
-            //}
-
             return await _auditFileRepository.AuditFileAsync(audit);
         }
 
+        /// <summary>
+        /// Get an Audit record by Id
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public async Task<DailyMTMFilesAudit> GetFileAuditByFileNameAsync(string fileName)
         {
             return await _auditFileRepository.GetAuditByFileNameAsync(fileName);

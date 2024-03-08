@@ -8,7 +8,7 @@ namespace PSecApp.Application.Services.Implementations
     /// </summary>
     public class FileDownloadService : IFileDownloadService
     {        
-        private HttpClient _httpClient = new HttpClient();
+        private readonly HttpClient _httpClient = new HttpClient();
         private readonly IFileValidatorService _fileValidatorService;
 
         public FileDownloadService(IFileValidatorService fileValidatorService)

@@ -8,6 +8,11 @@ namespace PSecApp.Application.Services.Abstractions
 {
     public interface IFileValidatorService
     {
+        /// <summary>
+        /// Check if file has any data
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         bool IsFileEmpty(string file);
 
         /// <summary>
@@ -26,7 +31,7 @@ namespace PSecApp.Application.Services.Abstractions
         bool IsFileAlreadyDownloaded(string destinationFolder, string destinationFileName);
 
         /// <summary>
-        /// TODO: Only files that have not been processed should be added to the table
+        /// Only files that have not been processed should be added to the table
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>

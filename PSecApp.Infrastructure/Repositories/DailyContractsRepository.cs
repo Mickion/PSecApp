@@ -13,9 +13,7 @@ namespace PSecApp.Infrastructure.Repositories
         {
             _dbConnection = dbConnection;
         }
-
-        //static IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlServerConnString"].ConnectionString);
-
+        
         /// <summary>
         /// Persists file data into a dababase
         /// </summary>
@@ -24,15 +22,8 @@ namespace PSecApp.Infrastructure.Repositories
         /// <exception cref="NotImplementedException"></exception>
         public async Task<bool> InsertFileDataAsyc(List<DailyMTM> dataList)
         {
-            // TODO: MOVE CONNECTION STRING APP.JSON
-            //string connectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=PSecDb;Integrated Security=True;";
-
             string sproc = "Insert_DailyMTM";
-            //await using (SqlConnection connection = new SqlConnection(connectionString))
-            //{
-            //    await connection.OpenAsync();
 
-            //var transaction = _dbConnection.BeginTransaction();
             foreach (var data in dataList)
             {
                 var primaryKey =

@@ -1,12 +1,6 @@
-﻿using PSecApp.Application.POCOs;
-using PSecApp.Application.Services.Abstractions;
+﻿using PSecApp.Application.Services.Abstractions;
 using PSecApp.Domain.Entities;
 using PSecApp.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PSecApp.Application.Services.Implementations
 {
@@ -21,10 +15,6 @@ namespace PSecApp.Application.Services.Implementations
         public FileDataService(IDailyContractsRepository dailyContractsRepository)
         {
             _dailyContractsRepository = dailyContractsRepository;
-        }
-        public Task<List<DailyMTM>> GetAllFileData()
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<bool> SaveFileDataAsync(List<DailyMTM> dataList)

@@ -4,7 +4,6 @@ using PSecApp.Application.Services.Abstractions;
 using PSecApp.Domain.Entities;
 using PSecApp.Domain.Enums;
 using PSecApp.Application.Exceptions;
-using Microsoft.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace PSecApp.Application.Services.Implementations
@@ -38,8 +37,9 @@ namespace PSecApp.Application.Services.Implementations
         #endregion
 
         #region Public Methods
+
         /// <summary>
-        /// 
+        /// Downlloads files for the specified year 
         /// </summary>
         /// <param name="forYear"></param>
         /// <returns></returns>
@@ -122,9 +122,7 @@ namespace PSecApp.Application.Services.Implementations
                 {
                     await AuditAsync(FileProcessingStages.StartOfProcessing, file, true, "file failed to process.");
                     this.Red(DateTime.Now + " : FILE FAILED EXTRACTED" + file.DestinationFileName);
-                }
-                    
-
+                }                  
             }
         }
 
@@ -139,7 +137,7 @@ namespace PSecApp.Application.Services.Implementations
         private async Task<DailyMTMFilesAudit> AuditAsync(FileProcessingStages filestage, DownloadFile file, bool error = false, string errMessage = "")
         {
 
-            // Get existing file Audit =, if it exists so to update it accordingly
+            // Get existing file Audit, if it exists so to update it accordingly, else create new audit entry.
             DailyMTMFilesAudit audit = await _fileAuditService.GetFileAuditByFileNameAsync(file.DestinationFileName);
 
             switch (filestage)
@@ -181,13 +179,13 @@ namespace PSecApp.Application.Services.Implementations
                     break;
             }
 
-
             return await _fileAuditService.AuditFileAsync(audit);
         }
 
         #endregion
 
 
+        #region Console App trace
         private void Green(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -211,6 +209,7 @@ namespace PSecApp.Application.Services.Implementations
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(msg);
         }
+        #endregion
 
     }
 }

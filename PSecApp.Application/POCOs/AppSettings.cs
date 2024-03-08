@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PSecApp.Application.POCOs
 {
     /// <summary>
-    /// Options pattern
+    /// Options Pattern
     /// </summary>
     public class AppSettings
     {
