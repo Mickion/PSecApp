@@ -1,9 +1,4 @@
-﻿using PSecApp.Application.Models;
-using PSecApp.Application.Helpers;
-using PSecApp.Application.Services.Abstractions;
-using PSecApp.Domain.Interfaces;
-using PSecApp.Domain.Entities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using PSecApp.Application.Services.Abstractions;
 
 namespace PSecApp.Application.Services.Implementations
 {
@@ -13,10 +8,9 @@ namespace PSecApp.Application.Services.Implementations
     /// </summary>
     public class FileDownloadService : IFileDownloadService
     {        
-        //TODO : Inject
         private HttpClient _httpClient = new HttpClient();
         private readonly IFileValidatorService _fileValidatorService;
-        private readonly IAuditService _auditService;
+
         public FileDownloadService(IFileValidatorService fileValidatorService)
         {
             _fileValidatorService = fileValidatorService;

@@ -1,75 +1,81 @@
 ﻿using PSecApp.Application.Helpers;
-using PSecApp.Application.Models;
+using PSecApp.Application.POCOs;
 using PSecApp.Application.Services.Abstractions;
 using PSecApp.Domain.Entities;
 using PSecApp.Domain.Enums;
 using PSecApp.Application.Exceptions;
+using Microsoft.Extensions;
+using Microsoft.Extensions.Options;
 
-namespace PSecApp.Application
+namespace PSecApp.Application.Services.Implementations
 {
-    public class Application
+
+    public class OrchestratorService : IOrchestratorService
     {
-        // TODO: Save in config.json
-        #region Private Members
-        private readonly string _fileName = "20240102_D_Daily MTM Report.xls";
-        private readonly string _destination = "C:\\Users\\micki\\Documents\\tst";
-        private readonly string _downloadSource = "https://clientportal.jse.co.za/_layouts/15/DownloadHandler.ashx?FileName=/YieldX/Derivatives/Docs_DMTM";
 
-
-        //TODO: Implement Dependency Injection        
+        #region Private Members   
+        private readonly AppSettings _config;
         private readonly IAuditService _fileAuditService;
         private readonly IFileDataService _fileDataService;
         private readonly IFileDownloadService _fileDownloadService;
-        private readonly IFileValidatorService _fileValidatorService;        
-        private readonly IFileReaderService<DailyMTM, DownloadFile> _fileReaderService;
-
-
-        //private readonly IDailyContractsRepository dataRepository;
-        //private readonly IFileReaderService<DailyMTM, DownloadFile> readerService;
-        //private readonly IFileDataService dataService;
+        private readonly IFileReaderService<DailyMTM, DownloadFile> _fileReaderService;               
         #endregion
 
         #region Constructors
-        public Application(
+        public OrchestratorService(
             IAuditService auditService,
             IFileDataService fileDataService,
-            IFileDownloadService fileDownloadService, 
+            IFileDownloadService fileDownloadService,
             IFileValidatorService fileValidatorService,
-            IFileReaderService<DailyMTM, DownloadFile> fileReaderService)
+            IFileReaderService<DailyMTM, DownloadFile> fileReaderService, IOptions<AppSettings> options)
         {
             _fileAuditService = auditService;
             _fileDataService = fileDataService;
             _fileDownloadService = fileDownloadService;
-            _fileValidatorService = fileValidatorService;
             _fileReaderService = fileReaderService;
+            _config = options.Value;
         }
         #endregion
 
         #region Public Methods
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forYear"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task ProcessFilesAsync(int forYear)
+        {
+            await this.ProcessFilesAsync(forYear, _config.DownloadFromUri, _config.DestinationFolder);
+        }
+
+
+        /// <summary>
         /// Entry point of the program
         /// </summary>
         /// <param name="forYear"></param>
-        public async Task ProcessFiles(int forYear)
+        public async Task ProcessFilesAsync(int forYear, string source, string destination)
         {
-            foreach (DownloadFile file in DownloadHelper.GetDownloadFileNames(_downloadSource, _destination, forYear))
+            foreach (DownloadFile file in DownloadHelper.GetDownloadFileNames(source, destination, forYear))
             {
                 try
                 {
-                    await this.DownloadFileAsync(file);
+                    await DownloadFileAsync(file);
                 }
                 catch (FileDownloadException fileDownloadEx)
                 {
-                    await this.AuditAsync(FileProcessingStages.StartOfDownload, file, true, fileDownloadEx.Message);
+                    await AuditAsync(FileProcessingStages.StartOfDownload, file, true, fileDownloadEx.Message);
+                    this.Red(DateTime.Now + " : by passed download : " + file.DestinationFileName+ " reason "+ fileDownloadEx.Message);
                 }
 
                 try
                 {
-                    await this.ExtractDataFromFileAsync(file);
+                    await ExtractDataFromFileAsync(file);
                 }
                 catch (FileProcessingException fileProcessingEx)
                 {
-                    await this.AuditAsync(FileProcessingStages.StartOfProcessing, file,  true, fileProcessingEx.Message);
+                    await AuditAsync(FileProcessingStages.StartOfProcessing, file, true, fileProcessingEx.Message);
+                    this.Red(DateTime.Now + " : by passed file extract : " + file.DestinationFileName + " reason " + fileProcessingEx.Message);
                 }
             }
         }
@@ -84,11 +90,13 @@ namespace PSecApp.Application
         /// <returns></returns>
         private async Task DownloadFileAsync(DownloadFile file)
         {
-            await this.AuditAsync(FileProcessingStages.StartOfDownload, file);
+            this.Amber(DateTime.Now + " : Starting download of "+ file.DestinationFileName);
+            await AuditAsync(FileProcessingStages.StartOfDownload, file);            
 
             await _fileDownloadService.DownloadFilesAsync(file.SourceFileUri, file.DestinationFolder, file.DestinationFileName);
 
-            await this.AuditAsync(FileProcessingStages.FileDownloadedSuccessfully, file); //Mark File As Downloaded
+            await AuditAsync(FileProcessingStages.FileDownloadedSuccessfully, file); //Mark File As Downloaded
+            this.Green(DateTime.Now + " : Downloaded Successful " + file.DestinationFileName);
         }
 
         /// <summary>
@@ -98,16 +106,24 @@ namespace PSecApp.Application
         /// <returns></returns>
         private async Task ExtractDataFromFileAsync(DownloadFile file)
         {
+            this.Amber(DateTime.Now + " : EXTRACTING FILE DATA " + file.DestinationFileName);
             var fileData = await _fileReaderService.ReadDataFromAFileAsync(file);
             if (fileData.Count > 0)
             {
                 var successfull = await _fileDataService.SaveFileDataAsync(fileData);
                 if (successfull)
+                {
                     // FLAG as processed
-                    await this.AuditAsync(FileProcessingStages.FileProcessedSuccessfully, file);
+                    await AuditAsync(FileProcessingStages.FileProcessedSuccessfully, file);
 
+                    this.Green(DateTime.Now + " : EXTRACTED Successfuly " + file.DestinationFileName);
+                }
                 else
-                    await this.AuditAsync(FileProcessingStages.StartOfProcessing, file, true, "file failed to process.");
+                {
+                    await AuditAsync(FileProcessingStages.StartOfProcessing, file, true, "file failed to process.");
+                    this.Red(DateTime.Now + " : FILE FAILED EXTRACTED" + file.DestinationFileName);
+                }
+                    
 
             }
         }
@@ -120,11 +136,10 @@ namespace PSecApp.Application
         /// <param name="error"></param>
         /// <param name="errMessage"></param>
         /// <returns></returns>
-        private async Task<DailyMTMFilesAudit> AuditAsync(FileProcessingStages filestage, DownloadFile file, bool error = false, string errMessage="")
+        private async Task<DailyMTMFilesAudit> AuditAsync(FileProcessingStages filestage, DownloadFile file, bool error = false, string errMessage = "")
         {
-            // DailyMTMFilesAudit audit = new DailyMTMFilesAudit();
 
-            // If it doesn't exist, save default values
+            // Get existing file Audit =, if it exists so to update it accordingly
             DailyMTMFilesAudit audit = await _fileAuditService.GetFileAuditByFileNameAsync(file.DestinationFileName);
 
             switch (filestage)
@@ -133,17 +148,17 @@ namespace PSecApp.Application
                     audit.FileDate = file.FileDate;
                     audit.FileName = file.DestinationFileName;
                     audit.ProcessingStartTime = DateTime.Now;
-                    audit.DownloadedFlag = false;                   
+                    audit.DownloadedFlag = false;
                     audit.ProcessedFlag = false;
-                    audit.DownloadError = error ? errMessage: "";
+                    audit.DownloadError = error ? errMessage : "";
                     break;
 
                 case FileProcessingStages.FileDownloadedSuccessfully:
                     audit.FileDate = file.FileDate;
                     audit.FileName = file.DestinationFileName;
                     audit.DownloadedFlag = error ? false : true; // if error, downloaded is false
-                    audit.DownloadError = error ? errMessage: "";
-                    audit.ProcessedFlag = false;                    
+                    audit.DownloadError = error ? errMessage : "";
+                    audit.ProcessedFlag = false;
                     break;
 
                 case FileProcessingStages.StartOfProcessing:
@@ -167,11 +182,35 @@ namespace PSecApp.Application
             }
 
 
-            return await _fileAuditService.AuditFileAsync(audit);            
+            return await _fileAuditService.AuditFileAsync(audit);
         }
 
-        
         #endregion
+
+
+        private void Green(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(msg);
+        }
+
+        private void Amber(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(msg);
+        }
+
+        private void Red(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(msg);
+        }
+
+        private void Blue(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(msg);
+        }
 
     }
 }

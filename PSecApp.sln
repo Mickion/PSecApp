@@ -5,13 +5,13 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4DB4888C-DBD7-4EEE-87ED-3B99CE251B7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSecApp.Domain", "PSecApp.Domain\PSecApp.Domain.csproj", "{C82969A6-2F7A-4741-8F7C-21A1E8EDD296}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSecApp.Domain", "PSecApp.Domain\PSecApp.Domain.csproj", "{C82969A6-2F7A-4741-8F7C-21A1E8EDD296}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSecApp.Application", "PSecApp.Application\PSecApp.Application.csproj", "{4DE203D7-9A4B-4760-B3D2-569547F81C96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSecApp.Application", "PSecApp.Application\PSecApp.Application.csproj", "{4DE203D7-9A4B-4760-B3D2-569547F81C96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSecApp.Infrastructure", "PSecApp.Infrastructure\PSecApp.Infrastructure.csproj", "{EC950642-315E-4734-B6F4-313D48302E2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSecApp.Infrastructure", "PSecApp.Infrastructure\PSecApp.Infrastructure.csproj", "{EC950642-315E-4734-B6F4-313D48302E2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSecApp.UI", "PSecApp.UI\PSecApp.UI.csproj", "{B7666E0F-EA8C-44B4-BD69-FD7C0E606818}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSecApp.UI", "PSecApp.UI\PSecApp.UI.csproj", "{B7666E0F-EA8C-44B4-BD69-FD7C0E606818}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

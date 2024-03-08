@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PSecApp.Application.Models
+namespace PSecApp.Application.POCOs
 {
-    //TODO: Change to record or not?
     public class DownloadFile
     {
         public string DestinationFolder { get; set; } = string.Empty;
@@ -17,6 +16,5 @@ namespace PSecApp.Application.Models
 
         public DateTime FileDate { get; set; } = DateTime.Now;
 
-        //string sourceFile, string destinationFolder, string destinationFileName
     }
 }

@@ -1,4 +1,4 @@
-﻿using PSecApp.Application.Models;
+﻿using PSecApp.Application.POCOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PSecApp.Application.Helpers
 {
-    public class DownloadHelper
+    public static class DownloadHelper
     {
 
         /// <summary>

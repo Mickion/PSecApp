@@ -9,7 +9,8 @@ using PSecApp.Domain.Entities;
 using PSecApp.Domain.Enums;
 using System;
 using PSecApp.Domain.Interfaces;
-using PSecApp.Application.Models;
+using PSecApp.Application.POCOs;
+using System.Runtime.InteropServices;
 
 namespace PSecApp.Application.Services.Implementations
 {
@@ -17,7 +18,7 @@ namespace PSecApp.Application.Services.Implementations
     /// Reads Excel file content & nothing else (SRP)    
     /// </summary>
     public class FileReaderService
-        : IFileReaderService<DailyMTM, DownloadFile>
+        : IFileReaderService<DailyMTM, PSecApp.Application.POCOs.DownloadFile>
     {
         // TODO:  Logger
         private readonly IFileValidatorService _fileValidatorService;
@@ -35,6 +36,8 @@ namespace PSecApp.Application.Services.Implementations
         /// <returns></returns>
         public async Task<List<DailyMTM>> ReadDataFromAFileAsync(DownloadFile source)
         {
+            List<DailyMTM> mappedData = new List<DailyMTM>();
+
             string path = Path.Combine(source.DestinationFolder, source.DestinationFileName);
 
             // Only files that have not been processed already should be extracted & processed
@@ -43,15 +46,66 @@ namespace PSecApp.Application.Services.Implementations
             // Do not process empty file (0KB)
             if (_fileValidatorService.IsFileEmpty(path)) return new List<DailyMTM>();
 
-            Excel.Application xlApp = new Excel.Application();
-            Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(path);
-            Excel._Worksheet xlWorksheet = (Excel._Worksheet)xlWorkbook.Sheets[1];
-            Excel.Range xlRange = xlWorksheet.UsedRange;
+            Excel.Application xlApp = null;
+            Excel.Workbook xlWorkbook = null;
+            Excel._Worksheet xlWorksheet = null;
+            Excel.Range xlRange = null;
 
-            var mappedData = this.MapWorksheetToEntityList(xlRange, source.FileDate);
-            xlWorkbook.Close();
-            xlApp.Quit();
+            try
+            {
+                xlApp = new Excel.Application();
+                xlWorkbook = xlApp.Workbooks.Open(path);
+                xlWorksheet = (Excel._Worksheet)xlWorkbook.Sheets[1];
+                xlRange = xlWorksheet.UsedRange;
 
+                mappedData = this.MapWorksheetToEntityList(xlRange, source.FileDate);
+
+            }
+            finally{
+                // always clean up excel
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                //xlWorkbook?.Close();
+                //xlApp?.Quit();
+
+                //System.Runtime.InteropServices.Marshal.ReleaseComObject(xlWorkbook);
+                //System.Runtime.InteropServices.Marshal.ReleaseComObject(xlWorksheet);
+                //System.Runtime.InteropServices.Marshal.ReleaseComObject(xlRange);
+                //System.Runtime.InteropServices.Marshal.ReleaseComObject(xlApp);
+                //xlWorkbook = null;
+                //xlWorksheet = null;
+                //xlRange = null;
+                //xlApp = null;
+
+                //release com objects to fully kill excel process from running in the background
+                if (xlRange != null)
+                {
+                    Marshal.ReleaseComObject(xlRange);
+                }
+
+                if (xlWorksheet != null)
+                {
+                    Marshal.ReleaseComObject(xlWorksheet);
+                }
+
+                //close and release
+                if (xlWorkbook != null)
+                {
+                    xlWorkbook.Close();
+                    Marshal.ReleaseComObject(xlWorkbook);
+                }
+
+                //quit and release
+                if (xlApp != null)
+                {
+                    xlApp.Quit();
+                    Marshal.ReleaseComObject(xlApp);
+                }
+
+            }
+           
             return mappedData;
         }
 

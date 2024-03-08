@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PSecApp.Application.Helpers
 {
-    public class DateTimeHelper 
+    public static class DateTimeHelper 
     {
         /// <summary>
         /// Return all the days for a specific year.
