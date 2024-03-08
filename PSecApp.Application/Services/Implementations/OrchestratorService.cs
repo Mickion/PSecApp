@@ -46,6 +46,9 @@ namespace PSecApp.Application.Services.Implementations
         /// <exception cref="NotImplementedException"></exception>
         public async Task ProcessFilesAsync(int forYear)
         {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Processing of files started at :  {0}", DateTime.Now);
+
             await this.ProcessFilesAsync(forYear, _config.DownloadFromUri, _config.DestinationFolder);
         }
 
@@ -78,6 +81,9 @@ namespace PSecApp.Application.Services.Implementations
                     this.Red(DateTime.Now + " : by passed file extract : " + file.DestinationFileName + " reason " + fileProcessingEx.Message);
                 }
             }
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Processing of files ended at :  {0}", DateTime.Now);
         }
 
         #endregion

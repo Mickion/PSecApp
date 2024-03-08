@@ -13,7 +13,6 @@ namespace PSecApp.Application.Services.Implementations
     public class FileReaderService
         : IFileReaderService<DailyMTM, PSecApp.Application.POCOs.DownloadFile>
     {
-        // TODO:  Logger
         private readonly IFileValidatorService _fileValidatorService;
         public FileReaderService(IFileValidatorService fileValidatorService)
         {

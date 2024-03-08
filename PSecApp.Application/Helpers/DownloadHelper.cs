@@ -19,9 +19,7 @@ namespace PSecApp.Application.Helpers
         /// <returns></returns>
         public static List<DownloadFile> GetDownloadFileNames(string source, string destination, int year)
         {
-            string partialFileName = "_D_Daily MTM Report.xls"; //TODO: Where to store this?
-
-                                                                                 // TODO: Should I refactor & remove the HelperClass?
+            string partialFileName = "_D_Daily MTM Report.xls";            
             List<DownloadFile> files = new();
             foreach (var day in DateTimeHelper.GetAllDaysForYear(year))
             {
